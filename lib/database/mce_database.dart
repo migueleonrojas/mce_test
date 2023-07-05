@@ -17,6 +17,7 @@ class Schedules extends Table {
   TextColumn get nameSportsfields => text()();
   DateTimeColumn get schedulingDate => dateTime()();
   TextColumn get schedulerPerson => text()();
+  TextColumn get percentageRain => text()();
 }
 
 @DriftDatabase(tables: [Sportsfields, Schedules])

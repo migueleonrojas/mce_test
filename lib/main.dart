@@ -3,7 +3,7 @@ import 'package:mce_test/providers/schedules_provider.dart';
 import 'package:mce_test/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/preferences_provider.dart';
+import 'providers/sports_field_provider.dart';
 
 void main() => runApp(AppState());
 
@@ -14,7 +14,7 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
        
-        ChangeNotifierProvider(create: (_) => PreferencesProvider(), lazy: false,),
+        ChangeNotifierProvider(create: (_) => SportsfieldProvider(), lazy: false,),
         ChangeNotifierProvider(create: (_) => ScheduleProvider(), lazy: false,)
       ],
       child: const MyApp(),

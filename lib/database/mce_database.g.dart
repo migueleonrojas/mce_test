@@ -211,9 +211,15 @@ class $SchedulesTable extends Schedules
   late final GeneratedColumn<String> schedulerPerson = GeneratedColumn<String>(
       'scheduler_person', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _percentageRainMeta =
+      const VerificationMeta('percentageRain');
+  @override
+  late final GeneratedColumn<String> percentageRain = GeneratedColumn<String>(
+      'percentage_rain', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, nameSportsfields, schedulingDate, schedulerPerson];
+      [id, nameSportsfields, schedulingDate, schedulerPerson, percentageRain];
   @override
   String get aliasedName => _alias ?? 'schedules';
   @override
@@ -250,6 +256,14 @@ class $SchedulesTable extends Schedules
     } else if (isInserting) {
       context.missing(_schedulerPersonMeta);
     }
+    if (data.containsKey('percentage_rain')) {
+      context.handle(
+          _percentageRainMeta,
+          percentageRain.isAcceptableOrUnknown(
+              data['percentage_rain']!, _percentageRainMeta));
+    } else if (isInserting) {
+      context.missing(_percentageRainMeta);
+    }
     return context;
   }
 
@@ -267,6 +281,8 @@ class $SchedulesTable extends Schedules
           DriftSqlType.dateTime, data['${effectivePrefix}scheduling_date'])!,
       schedulerPerson: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}scheduler_person'])!,
+      percentageRain: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}percentage_rain'])!,
     );
   }
 
@@ -281,11 +297,13 @@ class Schedule extends DataClass implements Insertable<Schedule> {
   final String nameSportsfields;
   final DateTime schedulingDate;
   final String schedulerPerson;
+  final String percentageRain;
   const Schedule(
       {required this.id,
       required this.nameSportsfields,
       required this.schedulingDate,
-      required this.schedulerPerson});
+      required this.schedulerPerson,
+      required this.percentageRain});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -293,6 +311,7 @@ class Schedule extends DataClass implements Insertable<Schedule> {
     map['name_sportsfields'] = Variable<String>(nameSportsfields);
     map['scheduling_date'] = Variable<DateTime>(schedulingDate);
     map['scheduler_person'] = Variable<String>(schedulerPerson);
+    map['percentage_rain'] = Variable<String>(percentageRain);
     return map;
   }
 
@@ -302,6 +321,7 @@ class Schedule extends DataClass implements Insertable<Schedule> {
       nameSportsfields: Value(nameSportsfields),
       schedulingDate: Value(schedulingDate),
       schedulerPerson: Value(schedulerPerson),
+      percentageRain: Value(percentageRain),
     );
   }
 
@@ -313,6 +333,7 @@ class Schedule extends DataClass implements Insertable<Schedule> {
       nameSportsfields: serializer.fromJson<String>(json['nameSportsfields']),
       schedulingDate: serializer.fromJson<DateTime>(json['schedulingDate']),
       schedulerPerson: serializer.fromJson<String>(json['schedulerPerson']),
+      percentageRain: serializer.fromJson<String>(json['percentageRain']),
     );
   }
   @override
@@ -323,6 +344,7 @@ class Schedule extends DataClass implements Insertable<Schedule> {
       'nameSportsfields': serializer.toJson<String>(nameSportsfields),
       'schedulingDate': serializer.toJson<DateTime>(schedulingDate),
       'schedulerPerson': serializer.toJson<String>(schedulerPerson),
+      'percentageRain': serializer.toJson<String>(percentageRain),
     };
   }
 
@@ -330,12 +352,14 @@ class Schedule extends DataClass implements Insertable<Schedule> {
           {int? id,
           String? nameSportsfields,
           DateTime? schedulingDate,
-          String? schedulerPerson}) =>
+          String? schedulerPerson,
+          String? percentageRain}) =>
       Schedule(
         id: id ?? this.id,
         nameSportsfields: nameSportsfields ?? this.nameSportsfields,
         schedulingDate: schedulingDate ?? this.schedulingDate,
         schedulerPerson: schedulerPerson ?? this.schedulerPerson,
+        percentageRain: percentageRain ?? this.percentageRain,
       );
   @override
   String toString() {
@@ -343,14 +367,15 @@ class Schedule extends DataClass implements Insertable<Schedule> {
           ..write('id: $id, ')
           ..write('nameSportsfields: $nameSportsfields, ')
           ..write('schedulingDate: $schedulingDate, ')
-          ..write('schedulerPerson: $schedulerPerson')
+          ..write('schedulerPerson: $schedulerPerson, ')
+          ..write('percentageRain: $percentageRain')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, nameSportsfields, schedulingDate, schedulerPerson);
+  int get hashCode => Object.hash(
+      id, nameSportsfields, schedulingDate, schedulerPerson, percentageRain);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -358,7 +383,8 @@ class Schedule extends DataClass implements Insertable<Schedule> {
           other.id == this.id &&
           other.nameSportsfields == this.nameSportsfields &&
           other.schedulingDate == this.schedulingDate &&
-          other.schedulerPerson == this.schedulerPerson);
+          other.schedulerPerson == this.schedulerPerson &&
+          other.percentageRain == this.percentageRain);
 }
 
 class SchedulesCompanion extends UpdateCompanion<Schedule> {
@@ -366,31 +392,37 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
   final Value<String> nameSportsfields;
   final Value<DateTime> schedulingDate;
   final Value<String> schedulerPerson;
+  final Value<String> percentageRain;
   const SchedulesCompanion({
     this.id = const Value.absent(),
     this.nameSportsfields = const Value.absent(),
     this.schedulingDate = const Value.absent(),
     this.schedulerPerson = const Value.absent(),
+    this.percentageRain = const Value.absent(),
   });
   SchedulesCompanion.insert({
     this.id = const Value.absent(),
     required String nameSportsfields,
     required DateTime schedulingDate,
     required String schedulerPerson,
+    required String percentageRain,
   })  : nameSportsfields = Value(nameSportsfields),
         schedulingDate = Value(schedulingDate),
-        schedulerPerson = Value(schedulerPerson);
+        schedulerPerson = Value(schedulerPerson),
+        percentageRain = Value(percentageRain);
   static Insertable<Schedule> custom({
     Expression<int>? id,
     Expression<String>? nameSportsfields,
     Expression<DateTime>? schedulingDate,
     Expression<String>? schedulerPerson,
+    Expression<String>? percentageRain,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (nameSportsfields != null) 'name_sportsfields': nameSportsfields,
       if (schedulingDate != null) 'scheduling_date': schedulingDate,
       if (schedulerPerson != null) 'scheduler_person': schedulerPerson,
+      if (percentageRain != null) 'percentage_rain': percentageRain,
     });
   }
 
@@ -398,12 +430,14 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
       {Value<int>? id,
       Value<String>? nameSportsfields,
       Value<DateTime>? schedulingDate,
-      Value<String>? schedulerPerson}) {
+      Value<String>? schedulerPerson,
+      Value<String>? percentageRain}) {
     return SchedulesCompanion(
       id: id ?? this.id,
       nameSportsfields: nameSportsfields ?? this.nameSportsfields,
       schedulingDate: schedulingDate ?? this.schedulingDate,
       schedulerPerson: schedulerPerson ?? this.schedulerPerson,
+      percentageRain: percentageRain ?? this.percentageRain,
     );
   }
 
@@ -422,6 +456,9 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
     if (schedulerPerson.present) {
       map['scheduler_person'] = Variable<String>(schedulerPerson.value);
     }
+    if (percentageRain.present) {
+      map['percentage_rain'] = Variable<String>(percentageRain.value);
+    }
     return map;
   }
 
@@ -431,7 +468,8 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
           ..write('id: $id, ')
           ..write('nameSportsfields: $nameSportsfields, ')
           ..write('schedulingDate: $schedulingDate, ')
-          ..write('schedulerPerson: $schedulerPerson')
+          ..write('schedulerPerson: $schedulerPerson, ')
+          ..write('percentageRain: $percentageRain')
           ..write(')'))
         .toString();
   }
