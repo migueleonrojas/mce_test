@@ -104,6 +104,8 @@ class ScheduleProvider extends ChangeNotifier {
           titleAlert: 'Agenda agotada',
           messageAlert: 'Solo se puede agendar en un día 3 veces como máximo',
         ));
+        isDateSelected = false;
+        schedulingDate = DateTime.now();
         return;
       }
         
@@ -115,12 +117,16 @@ class ScheduleProvider extends ChangeNotifier {
     final jsonData = await getResponseApi("/v2/weather/point", dateSelected);
 
     try{
-      final precipitationResponse = Precipitationresponse.fromJson(jsonData);
-      percentageRain = '${(precipitationResponse.hours[0].precipitation.noaa * 100)/60}%';
       
+      final precipitationResponse = Precipitationresponse.fromJson(jsonData);
+      percentageRain = '${(precipitationResponse.hours[0].precipitation.noaa * 100)/60}% probabilidades de lluvia';
+      notifyListeners();
     }
     catch(error){
+      
+
       percentageRain = 'Información no disponible';
+      notifyListeners();
       debugPrint(error.toString());
     }
    

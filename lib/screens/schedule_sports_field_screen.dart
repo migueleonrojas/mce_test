@@ -80,6 +80,39 @@ class ScheduleSportsFieldScreen extends StatelessWidget {
     
                   ],
                 ),
+                if(scheduleProvider.percentageRain.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  color:const Color(0xFF274092),
+                  child: Column(
+                    children: [
+                       
+                       const Text(
+                        'Información sobre el probalidad de lluvia para la fecha:',
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                       ),
+                       SizedBox(height: MediaQuery.of(context).size.height * 0.02 ,),
+                       DateWidget( 
+                        day: scheduleProvider.schedulingDate.day,
+                        month: scheduleProvider.schedulingDate.month,
+                        year: scheduleProvider.schedulingDate.year,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02 ,),
+                      Text(
+                        '"${scheduleProvider.percentageRain}"',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white
+                        ),
+                      )
+                
+                    ],
+                  ),
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05 ,),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.80,
