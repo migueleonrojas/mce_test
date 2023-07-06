@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
     
     final scheduleProvider = Provider.of<ScheduleProvider>(context);
 
-    /* scheduleProvider.getSchedules(); */
+    
 
     return Scaffold(
       appBar: AppBar(
@@ -56,6 +56,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10,),
                   Container(
+                    
                     height: MediaQuery.of(context).size.height * 0.75,
                     child: SingleChildScrollView(
                       child: StreamBuilder(
@@ -81,9 +82,17 @@ class HomeScreen extends StatelessWidget {
                               itemCount: schedules.length,
                               itemBuilder: (_, int index) {
                                 return Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 10),
+                                  
+                                  decoration: BoxDecoration(
+
+                                    border: Border.all(color: Colors.blueAccent,width: 3),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(5.0)
+                                    ),
+                                  ),
+                                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                  color: Colors.amber,
+                                  
                                   width: MediaQuery.of(context).size.width,
                                   child: Column(
                                     
@@ -91,40 +100,88 @@ class HomeScreen extends StatelessWidget {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Nombre de la cancha:'),
-                                          Text(schedules[index].nameSportsfields)
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('Fecha agendada:'),
-                                          DateWidget(
-                                            day: schedules[index].schedulingDate.day,
-                                            month: schedules[index].schedulingDate.month,
-                                            year: schedules[index].schedulingDate.year,
+                                          const Text(
+                                            'Nombre de la cancha:',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            schedules[index].nameSportsfields,
+                                            style :const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           )
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Nombre de la persona que agendo:'),
-                                          Text(schedules[index].schedulerPerson)
+                                          const Text(
+                                            'Fecha agendada:',
+                                            style : TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          DateWidget(
+                                            day: schedules[index].schedulingDate.day,
+                                            month: schedules[index].schedulingDate.month,
+                                            year: schedules[index].schedulingDate.year,
+                                            color: Colors.black,
+                                          )
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Porcentaje de lluvia:'),
-                                          Text(schedules[index].percentageRain)
+                                          const Text(
+                                            'Nombre de la persona que agendo:',
+                                            style : TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                           Flexible(
+                                             child: Text(
+                                              schedules[index].schedulerPerson,
+                                              textAlign: TextAlign.right,
+                                              
+                                              style : const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                                                                     ),
+                                           )
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            'Porcentaje de lluvia:',
+                                            style : TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            schedules[index].percentageRain,
+                                            style : const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
                                         ],
                                       ),
                                       ElevatedButton(
+                                        
                                         onPressed: () {
                                           scheduleProvider.deleteSchedules(schedules[index], context);
                                         },
-                                        child: const Text('Eliminar agenda')
+                                        child: const Text('Eliminar agendación de cancha')
                                       ),
                     
                     

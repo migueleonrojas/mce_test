@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:mce_test/constants.dart';
 import 'package:mce_test/database/mce_database.dart';
+import 'package:mce_test/models/precipitation_response_model.dart';
 import 'package:mce_test/widget/alert_widget.dart';
 import 'package:mce_test/widget/confirm_widget.dart';
+import 'package:http/http.dart' as http;
 
 
 class ScheduleProvider extends ChangeNotifier {
@@ -21,7 +24,29 @@ class ScheduleProvider extends ChangeNotifier {
 
   DateTime schedulingDate = DateTime.now();
 
+  String percentageRain = "";
+
+  bool isDateSelected = false;
+
   final schedulerPerson = TextEditingController();
+  /* /v2/weather/point */
+  Future<String> getResponseApi(String endpoint, DateTime date) async {
+    
+    
+    final url = Uri.https(Constants.base_url, endpoint,{
+      'lat': '10.4686871',
+      'lng': '-67.0551851',
+      'params':'precipitation',
+      'start': date.toIso8601String(),
+      'end': date.toIso8601String()
+    });
+
+    final response = await http.get(url, headers: {
+      "Authorization": Constants.api_key
+    });
+    
+    return response.body;
+  }
   
   
   getSchedules() async {
@@ -47,17 +72,60 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   
-  checkSchedulingDate(BuildContext context) async {
+  checkSchedulingDate(BuildContext context, String nameSportField) async {
+    List<Schedule> listSchedules = [];
     DateTime? dateSelected = await showDatePicker(context: context, 
+
       initialDate: schedulingDate, 
       firstDate: DateTime(1900), 
-      lastDate: DateTime(2100)
+      lastDate: DateTime(2100),
+      
+      
     );
 
     if(dateSelected == null) return;
 
+    try{
+      listSchedules = await (mceDatabase.select(mceDatabase.schedules)
+        ..where((tbl) => tbl.schedulingDate.equals(dateSelected))
+        ..where((tbl) => tbl.nameSportsfields.equals(nameSportField))
+      )
+      .get();
+      
+    }
+    catch(error){
+      debugPrint(error.toString());
+
+    }
+
+    if(listSchedules.length > 2){
+      if (context.mounted) {
+        await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
+          titleAlert: 'Agenda agotada',
+          messageAlert: 'Solo se puede agendar en un día 3 veces como máximo',
+        ));
+        return;
+      }
+        
+      return;
+    }
+    isDateSelected = true;
     schedulingDate = dateSelected;
     notifyListeners();
+    final jsonData = await getResponseApi("/v2/weather/point", dateSelected);
+
+    try{
+      final precipitationResponse = Precipitationresponse.fromJson(jsonData);
+      percentageRain = '${(precipitationResponse.hours[0].precipitation.noaa * 100)/60}%';
+      
+    }
+    catch(error){
+      percentageRain = 'Información no disponible';
+      debugPrint(error.toString());
+    }
+   
+
+    
   }
 
   deleteSchedules(Schedule schedule, BuildContext context) async {
@@ -85,7 +153,17 @@ class ScheduleProvider extends ChangeNotifier {
     required BuildContext context
   }) async {
 
+    FocusScope.of(context).requestFocus(FocusNode());
     List<Schedule> listSchedules = [];
+
+    if(!isDateSelected){
+      await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
+        titleAlert: 'Debe seleccionar la fecha',
+        messageAlert: 'Debe seleccionar una fecha',
+      ));
+      
+      return;
+    }
     
     if(schedulerPerson.text.isEmpty){
       await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
@@ -96,24 +174,27 @@ class ScheduleProvider extends ChangeNotifier {
       return;
     }
 
+    if(schedulerPerson.text.length > 20){
+      await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
+        titleAlert: 'Campo nombre',
+        messageAlert: 'Debe indicar el nombre de la persona que agenda con máximo de 20 letras',
+      ));
+      
+      return;
+    }
+
     if(schedulingDate.isBefore(DateTime.now())){
 
       await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
-        titleAlert: 'Fecha menor a la actual',
-        messageAlert: 'No puede agendar en una fecha menor a la actual',
+        titleAlert: 'Fecha menor o igual a la actual',
+        messageAlert: 'No puede agendar en una fecha menor o igual a la actual',
       ));
 
       return;
 
     }
 
-    
-    /* print({
-      nameSportField,
-      schedulingDate,
-      schedulerPerson.text
-    }); */
-
+  
     try{
       listSchedules = await (mceDatabase.select(mceDatabase.schedules)
         ..where((tbl) => tbl.schedulingDate.equals(schedulingDate))
@@ -149,7 +230,8 @@ class ScheduleProvider extends ChangeNotifier {
         nameSportsfields: nameSportField, 
         schedulingDate: schedulingDate, 
         schedulerPerson: schedulerPerson.text, 
-        percentageRain: 'percentageRain')
+        percentageRain: percentageRain
+        )
       );
       
       if (context.mounted) {
@@ -158,8 +240,7 @@ class ScheduleProvider extends ChangeNotifier {
           messageAlert: 'La cancha se agendo con exito',
         ));
         getSchedules();
-        schedulerPerson.clear();
-
+        resetValues();
       }
       
 
@@ -173,7 +254,12 @@ class ScheduleProvider extends ChangeNotifier {
 
   }
 
-
+  resetValues() {
+    schedulingDate = DateTime.now();
+    percentageRain = "";
+    schedulerPerson.clear();
+    isDateSelected = false;
+  }
   
   
 }

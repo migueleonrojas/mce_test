@@ -34,12 +34,18 @@ class SportsfieldProvider extends ChangeNotifier {
 
     sportsfieldsList = await mceDatabase.select(mceDatabase.sportsfields).get();
 
+    
+
     notifyListeners();
   }
 
   setSportFieldSelected(Sportsfield sportsfield){
     sportsfieldSelected = sportsfield;
     notifyListeners();
+  }
+  
+  resetValues() {
+    sportsfieldSelected = sportsfieldsList.first;
   }
 
 }
