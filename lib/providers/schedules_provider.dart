@@ -7,7 +7,7 @@ import 'package:mce_test/models/precipitation_response_model.dart';
 import 'package:mce_test/widget/alert_widget.dart';
 import 'package:mce_test/widget/confirm_widget.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:intl/intl.dart';
 
 class ScheduleProvider extends ChangeNotifier {
 
@@ -74,31 +74,24 @@ class ScheduleProvider extends ChangeNotifier {
   
   checkSchedulingDate(BuildContext context, String nameSportField) async {
     List<Schedule> listSchedules = [];
+
     DateTime? dateSelected = await showDatePicker(context: context, 
-      
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: schedulingDate, 
       firstDate: DateTime(1900), 
       lastDate: DateTime(2100),
-      
-      
     );
 
     if(dateSelected == null) return;
-
-    try{
-      listSchedules = await (mceDatabase.select(mceDatabase.schedules)
-        ..where((tbl) => tbl.schedulingDate.equals(dateSelected))
-        ..where((tbl) => tbl.nameSportsfields.equals(nameSportField))
-      )
-      .get();
-      
-    }
-    catch(error){
-      debugPrint(error.toString());
-
-    }
-    if(dateSelected.isBefore(DateTime.now())){
+    
+    TimeOfDay? hourAndMinute = await showTimePicker(
+      context: context, 
+      initialTime: TimeOfDay(hour:  DateTime.now().hour, minute: DateTime.now().minute),
+    );
+    
+    if(hourAndMinute == null) return;
+    
+    if(dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute)).isBefore(DateTime.now())){
       if (context.mounted) {
         await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
           titleAlert: 'Fecha menor o igual a la actual',
@@ -110,6 +103,23 @@ class ScheduleProvider extends ChangeNotifier {
       }
 
       return;
+
+    }
+
+    try{
+      listSchedules = await (mceDatabase.select(mceDatabase.schedules)
+        ..where((tbl) => tbl.schedulingDate.equals(dateSelected))
+        ..where((tbl) => tbl.nameSportsfields.equals(nameSportField))
+      )
+      .get();
+
+      
+      
+      print(DateFormat('yyyy-MM-dd').format(dateSelected));
+      print(listSchedules.toString());
+    }
+    catch(error){
+      debugPrint(error.toString());
 
     }
 
@@ -127,10 +137,11 @@ class ScheduleProvider extends ChangeNotifier {
       return;
     }
     isDateSelected = true;
-    schedulingDate = dateSelected;
+    schedulingDate = dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute));
+    
     notifyListeners();
-    final jsonData = await getResponseApi("/v2/weather/point", dateSelected);
-
+    /* final jsonData = await getResponseApi("/v2/weather/point", dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute))); */
+    var jsonData = "";
     try{
       
       final precipitationResponse = Precipitationresponse.fromJson(jsonData);

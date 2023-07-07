@@ -3,8 +3,8 @@ import 'package:mce_test/database/mce_database.dart';
 import 'package:mce_test/providers/schedules_provider.dart';
 import 'package:mce_test/providers/sports_field_provider.dart';
 import 'package:mce_test/providers/schedules_provider.dart';
-import 'package:mce_test/widget/date_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class ScheduleSportsFieldScreen extends StatelessWidget {
 
@@ -57,12 +57,7 @@ class ScheduleSportsFieldScreen extends StatelessWidget {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05 ,),
                 Column(
                   children: [
-                    DateWidget( 
-                      day: scheduleProvider.schedulingDate.day,
-                      month: scheduleProvider.schedulingDate.month,
-                      year: scheduleProvider.schedulingDate.year,
-                      color: Colors.black,
-                    ),
+                    Text(DateFormat('dd/MM/yyyy hh:mm a').format(scheduleProvider.schedulingDate)),
                     const SizedBox(height: 10,),
                     ElevatedButton(
                       child: const Text('Seleccione la fecha agendamiento de la cancha'),
@@ -87,18 +82,18 @@ class ScheduleSportsFieldScreen extends StatelessWidget {
                   child: Column(
                     children: [
                        
-                       const Text(
+                      const Text(
                         'Información sobre el probalidad de lluvia para la fecha:',
                         style: TextStyle(
                           color: Colors.white
                         ),
-                       ),
-                       SizedBox(height: MediaQuery.of(context).size.height * 0.02 ,),
-                       DateWidget( 
-                        day: scheduleProvider.schedulingDate.day,
-                        month: scheduleProvider.schedulingDate.month,
-                        year: scheduleProvider.schedulingDate.year,
-                        color: Colors.white,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02 ,),
+                      Text(
+                        DateFormat('dd/MM/yyyy hh:mm a').format(scheduleProvider.schedulingDate),
+                        style: const TextStyle(
+                          color: Colors.white
+                        ),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.02 ,),
                       Text(

@@ -3,10 +3,10 @@ import 'package:mce_test/database/mce_database.dart';
 import 'package:mce_test/providers/sports_field_provider.dart';
 import 'package:mce_test/providers/schedules_provider.dart';
 import 'package:mce_test/screens/schedule_sports_field_screen.dart';
-import 'package:mce_test/widget/date_widget.dart';
 import 'package:mce_test/widget/empty_widget.dart';
 import 'package:mce_test/widget/loading_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -126,12 +126,8 @@ class HomeScreen extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          DateWidget(
-                                            day: schedules[index].schedulingDate.day,
-                                            month: schedules[index].schedulingDate.month,
-                                            year: schedules[index].schedulingDate.year,
-                                            color: Colors.black,
-                                          )
+                                          Text(DateFormat('dd/MM/yyyy hh:mm a').format(schedules[index].schedulingDate))
+                                          
                                         ],
                                       ),
                                       Row(
