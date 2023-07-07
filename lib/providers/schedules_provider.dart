@@ -108,15 +108,14 @@ class ScheduleProvider extends ChangeNotifier {
 
     try{
       listSchedules = await (mceDatabase.select(mceDatabase.schedules)
-        ..where((tbl) => tbl.schedulingDate.equals(dateSelected))
+        ..where((tbl) => tbl.schedulingDate.date.equals(DateFormat('yyyy-MM-dd').format(dateSelected))  )
         ..where((tbl) => tbl.nameSportsfields.equals(nameSportField))
       )
       .get();
 
       
       
-      print(DateFormat('yyyy-MM-dd').format(dateSelected));
-      print(listSchedules.toString());
+      
     }
     catch(error){
       debugPrint(error.toString());
@@ -140,8 +139,8 @@ class ScheduleProvider extends ChangeNotifier {
     schedulingDate = dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute));
     
     notifyListeners();
-    /* final jsonData = await getResponseApi("/v2/weather/point", dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute))); */
-    var jsonData = "";
+    final jsonData = await getResponseApi("/v2/weather/point", dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute)));
+    
     try{
       
       final precipitationResponse = Precipitationresponse.fromJson(jsonData);
