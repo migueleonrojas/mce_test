@@ -167,11 +167,14 @@ class HomeScreen extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          Text(
-                                            schedules[index].percentageRain,
-                                            style : const TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
+                                          Flexible(
+                                            child: Text(
+                                              schedules[index].percentageRain,
+                                              textAlign: TextAlign.right,
+                                              style : const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           )
                                         ],

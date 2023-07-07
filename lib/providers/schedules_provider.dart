@@ -75,7 +75,8 @@ class ScheduleProvider extends ChangeNotifier {
   checkSchedulingDate(BuildContext context, String nameSportField) async {
     List<Schedule> listSchedules = [];
     DateTime? dateSelected = await showDatePicker(context: context, 
-
+      
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: schedulingDate, 
       firstDate: DateTime(1900), 
       lastDate: DateTime(2100),
@@ -95,6 +96,20 @@ class ScheduleProvider extends ChangeNotifier {
     }
     catch(error){
       debugPrint(error.toString());
+
+    }
+    if(dateSelected.isBefore(DateTime.now())){
+      if (context.mounted) {
+        await showDialog(context:context, builder: (BuildContext context) => const AlertWidget(
+          titleAlert: 'Fecha menor o igual a la actual',
+          messageAlert: 'No puede agendar en una fecha menor o igual a la actual',
+        ));
+        isDateSelected = false;
+        schedulingDate = DateTime.now();
+        return;
+      }
+
+      return;
 
     }
 
@@ -119,7 +134,7 @@ class ScheduleProvider extends ChangeNotifier {
     try{
       
       final precipitationResponse = Precipitationresponse.fromJson(jsonData);
-      percentageRain = '${(precipitationResponse.hours[0].precipitation.noaa * 100)/60}% probabilidades de lluvia';
+      percentageRain = '${((precipitationResponse.hours[0].precipitation.noaa * 100)/30).toStringAsFixed(2)}% probabilidades de lluvia';
       notifyListeners();
     }
     catch(error){
