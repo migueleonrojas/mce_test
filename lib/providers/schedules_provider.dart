@@ -32,7 +32,7 @@ class ScheduleProvider extends ChangeNotifier {
 
 
   final schedulerPerson = TextEditingController();
-  /* /v2/weather/point */
+
   Future<String> getResponseApi(String endpoint, DateTime date) async {
     
     
