@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Listado de agenda de canchas'),
+        title: const Text('Agenda de canchas de tenis'),
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   const Text(
-                    'Canchas Agendadas',
+                    'Listado de Canchas de Tenis Agendadas',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20
@@ -95,7 +95,6 @@ class HomeScreen extends StatelessWidget {
                                   
                                   width: MediaQuery.of(context).size.width,
                                   child: Column(
-                                    
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,20 +115,25 @@ class HomeScreen extends StatelessWidget {
                                           )
                                         ],
                                       ),
+                                      const SizedBox(height: 2.5,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
-                                            'Fecha agendada:',
-                                            style : TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
+                                          const Flexible(
+                                            child:  Text(
+                                              'Fecha agendada:',
+                                              textAlign: TextAlign.right,
+                                              style : TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                           Text(DateFormat('dd/MM/yyyy hh:mm a').format(schedules[index].schedulingDate))
                                           
                                         ],
                                       ),
+                                      const SizedBox(height: 2.5,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
@@ -153,6 +157,7 @@ class HomeScreen extends StatelessWidget {
                                            )
                                         ],
                                       ),
+                                      const SizedBox(height: 2.5,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
@@ -175,6 +180,7 @@ class HomeScreen extends StatelessWidget {
                                           )
                                         ],
                                       ),
+                                      const SizedBox(height: 2.5,),
                                       ElevatedButton(
                                         
                                         onPressed: () {

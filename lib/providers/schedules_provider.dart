@@ -9,6 +9,7 @@ import 'package:mce_test/widget/confirm_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+
 class ScheduleProvider extends ChangeNotifier {
 
   
@@ -27,6 +28,8 @@ class ScheduleProvider extends ChangeNotifier {
   String percentageRain = "";
 
   bool isDateSelected = false;
+
+
 
   final schedulerPerson = TextEditingController();
   /* /v2/weather/point */
@@ -112,9 +115,6 @@ class ScheduleProvider extends ChangeNotifier {
         ..where((tbl) => tbl.nameSportsfields.equals(nameSportField))
       )
       .get();
-
-      
-      
       
     }
     catch(error){
@@ -135,7 +135,7 @@ class ScheduleProvider extends ChangeNotifier {
         
       return;
     }
-    isDateSelected = true;
+    
     schedulingDate = dateSelected.add(Duration(hours: hourAndMinute.hour, minutes: hourAndMinute.minute));
     
     notifyListeners();
@@ -144,13 +144,15 @@ class ScheduleProvider extends ChangeNotifier {
     try{
       
       final precipitationResponse = Precipitationresponse.fromJson(jsonData);
-      percentageRain = '${((precipitationResponse.hours[0].precipitation.noaa * 100)/30).toStringAsFixed(2)}% probabilidades de lluvia';
+      percentageRain = '${((precipitationResponse.hours[0].precipitation.noaa * 100)/30).toStringAsFixed(2)}%';
+      isDateSelected = true;
       notifyListeners();
+
     }
     catch(error){
-      
-
+    
       percentageRain = 'Información no disponible';
+      isDateSelected = true;
       notifyListeners();
       debugPrint(error.toString());
     }
@@ -225,10 +227,10 @@ class ScheduleProvider extends ChangeNotifier {
 
     }
 
-  
+    
     try{
       listSchedules = await (mceDatabase.select(mceDatabase.schedules)
-        ..where((tbl) => tbl.schedulingDate.equals(schedulingDate))
+        ..where((tbl) => tbl.schedulingDate.date.equals(DateFormat('yyyy-MM-dd').format(schedulingDate))   )
         ..where((tbl) => tbl.nameSportsfields.equals(nameSportField))
       )
       .get();

@@ -97,7 +97,8 @@ class ScheduleSportsFieldScreen extends StatelessWidget {
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.02 ,),
                       Text(
-                        '"${scheduleProvider.percentageRain}"',
+                        'Probabilidades de lluvia: "${scheduleProvider.percentageRain}"',
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
